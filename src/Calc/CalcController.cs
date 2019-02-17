@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Data.SqlClient;
 
 namespace Calc
 {
@@ -11,17 +12,30 @@ namespace Calc
         public CalcController(CalcModel calcModel, CalcView calcView)
         {
             this.calcModel = calcModel;
-            this.calcView = calcView;
+            this.calcView = calcView;         
         }
 
-        public void Update()
+        public bool Update()
         {
             calcView.GetData(calcModel);
             calcModel.Result = Calculate(calcModel.FirstOperand, calcModel.SecondOperand, calcModel.Operation);
             if (!Double.IsNaN(calcModel.Result))
             {
                 calcView.PrintResult(calcModel);
+                return true;
             }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void ClearModel (CalcModel calcModel)
+        {
+            calcModel.FirstOperand = 0;
+            calcModel.SecondOperand = 0;
+            calcModel.Operation = Operation.ErrorOperation;
+            calcModel.Result = Double.NaN;
         }
 
         public static double Calculate(double firstOperand, double secondOperand, Operation operation)
